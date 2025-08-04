@@ -1,11 +1,39 @@
-import { Link } from 'react-router-dom';
+
+import { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import api from '../../services/api';
+import { AuthContext } from '../../context/AuthContext';
 
 const Login = () => {
+    const { login } = useContext(AuthContext);
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    const navigate = useNavigate();
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        try {
+            const res = await api.post('/auth/login', {
+                username,
+                password
+            });
+
+            const { token, user } = res.data;
+            login(token, user);
+            alert("Login successful!");
+            navigate('/');
+        } catch (err) {
+            console.error("Login failed:", err.response?.data || err.message);
+        }
+    }
+
     return (
             <div className="flex items-center justify-center min-h-screen bg-gray-300">
                 <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
                     <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
-                    <form>
+                    <form onSubmit={handleLogin}>
                         <div className="mb-4">
                         <label className="block text-gray-700 mb-2" htmlFor="username">
                             Username
@@ -15,17 +43,7 @@ const Login = () => {
                             type="text"
                             id="username"
                             placeholder="Enter your username"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 mb-2" htmlFor="email">
-                            Email
-                        </label>
-                        <input
-                            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            type="email"
-                            id="email"
-                            placeholder="Enter your email"
+                            onChange={(e) => setUsername(e.target.value)}
                         />
                     </div>
                     <div className="mb-6">
@@ -37,6 +55,7 @@ const Login = () => {
                             type="password"
                             id="password"
                             placeholder="Enter your password"
+                            onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
                     <button

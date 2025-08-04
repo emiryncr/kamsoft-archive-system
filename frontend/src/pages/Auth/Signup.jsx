@@ -18,7 +18,6 @@ const Signup = () => {
 
     return (
         <div className="min-h-screen">
-            {/* Role Selection Section */}
             <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
                 <div className="text-center mb-12">
                     <h1 className="text-4xl font-bold text-gray-800 mb-4">Start your journey!</h1>
@@ -26,7 +25,6 @@ const Signup = () => {
                 </div>
                 
                 <div className="grid md:grid-cols-2 gap-8 max-w-4xl w-full px-4">
-                    {/* Reader Option */}
                     <div 
                         onClick={() => handleRoleSelection('reader')}
                         className="bg-white p-8 rounded-lg shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl border-2 hover:border-blue-500"
@@ -42,7 +40,6 @@ const Signup = () => {
                         </div>
                     </div>
 
-                    {/* Archiver Option */}
                     <div 
                         onClick={() => handleRoleSelection('archiver')}
                         className="bg-black text-white p-8 rounded-lg shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl border-2 hover:border-gray-600"
@@ -59,7 +56,6 @@ const Signup = () => {
                     </div>
                 </div>
 
-                {/* Scroll indicator */}
                 {selectedRole && (
                     <div className="mt-12 animate-bounce">
                         <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -69,7 +65,6 @@ const Signup = () => {
                 )}
             </div>
 
-            {/* Form Section */}
             {selectedRole && (
                 <div ref={formSectionRef} className="min-h-screen flex items-center justify-center">
                     <div className="w-full max-w-md">

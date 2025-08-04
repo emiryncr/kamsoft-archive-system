@@ -1,25 +1,34 @@
 import { useEffect, useState } from 'react'
 import { AuthContext } from './AuthContext'
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
     const token = localStorage.getItem('token')
-    const role = localStorage.getItem('role')
-    if (token && role) {
-      setUser({ token, role })
+    const userData = localStorage.getItem('userData')
+    
+    if (token && userData) {
+      try {
+        const parsedUser = JSON.parse(userData)
+        setUser({ token, ...parsedUser })
+      } catch (error) {
+        console.error('Error parsing user data:', error)
+        localStorage.removeItem('token')
+        localStorage.removeItem('userData')
+      }
     }
   }, [])
 
-  const login = (token, role) => {
+  const login = (token, userData) => {
     localStorage.setItem('token', token)
-    localStorage.setItem('role', role)
-    setUser({ token, role })
+    localStorage.setItem('userData', JSON.stringify(userData))
+    setUser({ token, ...userData })
   }
 
   const logout = () => {
     localStorage.removeItem('token')
-    localStorage.removeItem('role')
+    localStorage.removeItem('userData')
     setUser(null)
   }
 
