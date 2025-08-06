@@ -32,8 +32,8 @@ const Navbar = () => {
       <div className="hidden md:flex items-center space-x-4">
         <Link to="/" className="hover:text-gray-300">Home</Link>
         <Link to="/archives" className="hover:text-gray-300">Archives</Link>
-        {canAddItems && <Link to="/add" className="hover:text-gray-300">Add Item</Link>}
-        
+        {canAddItems && <Link to="/archives/new" className="hover:text-gray-300">Add Archive</Link>}
+
         {!user ? (
           <Link to="/login" className="hover:text-gray-300">Login</Link>
         ) : (
@@ -87,7 +87,7 @@ const Navbar = () => {
         <div className="flex flex-col space-y-2">
           <Link to="/" onClick={() => setMenuOpen(false)} className="hover:text-gray-300">Home</Link>
           <Link to="/archives" onClick={() => setMenuOpen(false)} className="hover:text-gray-300">Archives</Link>
-          {canAddItems && <Link to="/add" onClick={() => setMenuOpen(false)} className="hover:text-gray-300">Add Item</Link>}
+          {canAddItems && <Link to="/archives/new" onClick={() => setMenuOpen(false)} className="hover:text-gray-300">Add Archive</Link>}
           {!user ? (
             <Link to="/login" onClick={() => setMenuOpen(false)} className="hover:text-gray-300">Login</Link>
           ) : (

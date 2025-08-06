@@ -11,21 +11,21 @@ router.get('/', getAllItems);
 router.get('/:id', getItem);
 router.post('/', 
     verifyToken,
-    requireRole('archivist', 'admin'), 
+    requireRole('archiver', 'admin'), 
     itemValidationRules, 
     validate, 
     createItem
 );
 router.put('/:id', 
     verifyToken,
-    requireRole('archivist', 'admin'), 
+    requireRole('archiver', 'admin'), 
     itemValidationRules, 
     validate, 
     updateItem
 );
 router.delete('/:id', 
     verifyToken,
-    requireRole('archivist', 'admin'), 
+    requireRole('archiver', 'admin'), 
     deleteItem
 );
 

@@ -5,6 +5,7 @@ import Signup from '../pages/Auth/Signup';
 import ItemsList from '../pages/ItemsList';
 import Landing from '../pages/Landing';
 import ItemForm from '../pages/ItemForm';
+import ProtectedRoute from './ProtectedRoute';
 export const router = createBrowserRouter([
     {
         path: '/',
@@ -19,12 +20,20 @@ export const router = createBrowserRouter([
                 element: <ItemsList />
             },
             {
-                path: 'items/new',
-                element: <ItemForm />
+                path: 'archives/new',
+                element: (
+                    <ProtectedRoute allowedRoles={['admin', 'archiver']}>
+                        <ItemForm />
+                    </ProtectedRoute>
+                )
             },
             {
-                path: 'items/edit/:id',
-                element: <ItemForm editMode />
+                path: 'archives/edit/:id',
+                element: (
+                    <ProtectedRoute allowedRoles={['admin', 'archiver']}>
+                        <ItemForm editMode />
+                    </ProtectedRoute>
+                )
             },
         ]
     },

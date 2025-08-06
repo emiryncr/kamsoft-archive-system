@@ -1,11 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-
-const mockItems = [
-  { id: 1, title: 'Item 1', description: 'Description for Item 1', image: 'https://placehold.net/400x400.png' },
-  { id: 2, title: 'Item 2', description: 'Description for Item 2', image: 'https://placehold.net/400x400.png' },
-  { id: 3, title: 'Item 3', description: 'Description for Item 3', image: 'https://placehold.net/400x400.png' }
-];
+import api from '../services/api';
 
 const ItemForm = ({ editMode = false }) => {
   const { id } = useParams();
@@ -19,33 +14,45 @@ const ItemForm = ({ editMode = false }) => {
 
   useEffect(() => {
     if (editMode && id) {
-      const found = mockItems.find((item) => item.id === parseInt(id));
-      if (found) {
-        setItemData(found);
-      }
+      const fetchItem = async () => {
+        try {
+          const response = await api.get(`/items/${id}`);
+          setItemData(response.data);
+        } catch (error) {
+          console.error("Error fetching item:", error);
+        }
+      };
+      fetchItem();
     }
   }, [editMode, id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setItemData((prev) => ({
-      ...prev,
+    setItemData((prevData) => ({
+      ...prevData,
       [name]: value
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editMode) {
-      console.log('Updating item:', itemData);
-    } else {
-      console.log('Creating item:', itemData);
+    try {
+      if (editMode && id) {
+        await api.put(`/items/${id}`, itemData);
+        alert('Item updated successfully!');
+      } else {
+        await api.post('/items', itemData);
+        alert('Item created successfully!');
+      }
+      navigate('/archives');
+    } catch (error) {
+      console.error("Error saving item:", error);
+      alert('Failed to save item. Please try again.');
     }
-    navigate('/archives');
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 max-w-2xl mx-auto">
       <h2 className="text-xl font-semibold mb-4">
         {editMode ? 'Edit Item' : 'Create New Item'}
       </h2>

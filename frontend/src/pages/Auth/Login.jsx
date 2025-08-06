@@ -21,11 +21,17 @@ const Login = () => {
             });
 
             const { token, user } = res.data;
-            login(token, user);
-            alert("Login successful!");
+            login(token, {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                username: username
+        });
             navigate('/');
         } catch (err) {
             console.error("Login failed:", err.response?.data || err.message);
+            alert("Login failed. Please check your credentials.");
         }
     }
 
