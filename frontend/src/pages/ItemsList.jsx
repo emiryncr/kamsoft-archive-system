@@ -6,8 +6,6 @@ import api from '../services/api';
 const ItemsList = () => {
     const [items, setItems] = useState([]);
     const { user } = useAuth();
-
-    const canEditDelete = user && (user.role === 'archiver' || user.role === 'admin');
     
     useEffect(() => {
         api.get('/items')
@@ -35,15 +33,37 @@ const ItemsList = () => {
         }
     };
 
+    const canEditDelete = (item) => {
+        if (!user) return false;
+        if (user.role === 'admin') return true;
+        if (user.role === 'archiver' && item.createdBy && item.createdBy._id === user.id) return true;
+        return false;
+    };
+
+    const isMyItem = (item) => {
+        return user && item.createdBy && item.createdBy._id === user.id;
+    }
+
     return (
         <>
             <h2 className="text-2xl font-bold m-4">Archives</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {items.map(item => (
-                    <div key={item.id} className="border rounded p-4">
+                    <div key={item.id} className="border rounded p-4 shadow-lg relative">
+                        {isMyItem(item) && (
+                            <div className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                                Your Item
+                            </div>
+                        )}
                         <img src={item.image} alt={item.name} className="w-full h-32 object-cover mb-2" />
                         <h2 className="text-xl font-bold">{item.title}</h2>
-                        <p>
+                        <p className="text-gray-600 mb-2 text-sm">
+                            {item.description}...
+                        </p>
+                        <p className="text-gray-500 text-xs mb-2">
+                            Created by: {item.createdBy?.name || item.createdBy?.username || 'Unknown'}
+                        </p>
+                        <p className="text-gray-500 text-sm mb-3">
                             {new Date(item.createdAt).toLocaleString(undefined, {
                                 year: 'numeric',
                                 month: 'short',
@@ -53,7 +73,7 @@ const ItemsList = () => {
                             })}
                         </p>
 
-                        {canEditDelete && (
+                        {canEditDelete(item) && (
                             <div className="flex gap-2">
                                 <Link 
                                     to={`/archives/edit/${item.id}`}
