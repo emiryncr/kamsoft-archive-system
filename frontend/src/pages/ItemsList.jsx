@@ -47,9 +47,9 @@ const ItemsList = () => {
     return (
         <>
             <h2 className="text-2xl font-bold m-4">Archives</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
                 {items.map(item => (
-                    <div key={item.id} className="border rounded p-4 shadow-lg relative">
+                    <div key={item.id} className="border border-zinc-300 bg-zinc-100 rounded p-4 shadow-xl relative">
                         {isMyItem(item) && (
                             <div className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
                                 Your Item
