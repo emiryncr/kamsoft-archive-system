@@ -6,6 +6,8 @@ import ItemsList from '../pages/ItemsList';
 import Landing from '../pages/Landing';
 import ItemForm from '../pages/ItemForm';
 import ProtectedRoute from './ProtectedRoute';
+import UserManagement from '../pages/UserManagement';
+import ArchiveManagement from '../pages/ArchiveManagement';
 export const router = createBrowserRouter([
     {
         path: '/',
@@ -35,6 +37,23 @@ export const router = createBrowserRouter([
                     </ProtectedRoute>
                 )
             },
+            {
+                path: 'user-management',
+                element: (
+                    <ProtectedRoute allowedRoles={['admin']}>
+                        <UserManagement />
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: 'archive-management',
+                element: (
+                    <ProtectedRoute allowedRoles={['admin']}>
+                        <ArchiveManagement />
+                    </ProtectedRoute>
+                )
+            },
+
         ]
     },
     {

@@ -70,6 +70,24 @@ const Navbar = () => {
                       Dashboard
                     </Link>
                   )}
+                  {user.role === 'admin' && (
+                    <>
+                      <Link
+                          to="/user-management"
+                          onClick={() => setDropdownOpen(false)}
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                        >
+                          User Management
+                      </Link>
+                      <Link
+                        to="/archive-management"
+                        onClick={() => setDropdownOpen(false)}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                      >
+                          Archive Management
+                      </Link>
+                    </>
+                  )}
                   <button
                     onClick={handleLogout}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
