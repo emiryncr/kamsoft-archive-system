@@ -46,6 +46,8 @@ const UserSignupForm = () => {
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
+                    </div>
+                    <div className="mb-4">
                         <label className="block text-gray-100 mb-2" htmlFor="username">
                             Username
                         </label>
@@ -88,7 +90,7 @@ const UserSignupForm = () => {
                         type="submit"
                         className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-800 transition"
                     >
-                        Signup
+                        Sign up
                     </button>
                     <p className="mt-4 text-center text-white">
                         Do you have an account? <Link to="/login" className="text-blue-600 hover:underline">Login</Link>

@@ -31,7 +31,7 @@ const ArchivistSignupForm = () => {
 
     return (
         <div className="flex items-center justify-center min-h-screen">
-            <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-sm">
+            <div className="bg-white border-2 border-gray-200 p-8 rounded-xl shadow-xl w-full max-w-sm">
                 <h1 className="text-2xl font-bold mb-6 text-center">Sign up as an archivist</h1>
                 <form onSubmit={handleUserSignup}>
                     <div className="mb-4">
@@ -46,6 +46,8 @@ const ArchivistSignupForm = () => {
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
+                    </div>
+                    <div className="mb-4">
                         <label className="block text-gray-700 mb-2" htmlFor="username">
                             Username
                         </label>
@@ -71,7 +73,7 @@ const ArchivistSignupForm = () => {
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
-                    <div className="mb-6">
+                    <div className="mb-4">
                         <label className="block text-gray-700 mb-2" htmlFor="password">
                             Password
                         </label>
@@ -88,7 +90,7 @@ const ArchivistSignupForm = () => {
                         type="submit"
                         className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-800 transition"
                     >
-                        Signup
+                        Sign up
                     </button>
                     <p className="mt-4 text-center text-gray-600">
                         Do you have an account? <Link to="/login" className="text-blue-600 hover:underline">Login</Link>

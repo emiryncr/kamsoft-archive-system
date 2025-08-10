@@ -35,7 +35,7 @@ const Navbar = () => {
         {canAddItems && <Link to="/archives/new" className="hover:text-gray-300">Add Archive</Link>}
 
         {!user ? (
-          <Link to="/login" className="hover:text-gray-300">Login</Link>
+          <Link to="/login" className=" hover:bg-blue-700 bg-blue-600 rounded-xl px-2 py-1 font-bold">Login</Link>
         ) : (
           <div className="relative">
             <button
@@ -90,7 +90,7 @@ const Navbar = () => {
                   )}
                   <button
                     onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                    className="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100 hover:text-red-500 font-medium"
                   >
                     Sign out
                   </button>
@@ -107,7 +107,7 @@ const Navbar = () => {
           <Link to="/archives" onClick={() => setMenuOpen(false)} className="hover:text-gray-300">Archives</Link>
           {canAddItems && <Link to="/archives/new" onClick={() => setMenuOpen(false)} className="hover:text-gray-300">Add Archive</Link>}
           {!user ? (
-            <Link to="/login" onClick={() => setMenuOpen(false)} className="hover:text-gray-300">Login</Link>
+            <Link to="/login" onClick={() => setMenuOpen(false)} className="hover:text-gray-300 bg-blue-400">Login</Link>
           ) : (
             <>
               <div className="text-sm text-gray-300 border-b border-gray-600 pb-2">

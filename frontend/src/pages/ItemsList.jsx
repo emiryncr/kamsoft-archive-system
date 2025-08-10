@@ -52,7 +52,7 @@ const ItemsList = () => {
                     <div key={item.id} className="border border-zinc-300 bg-zinc-100 rounded p-4 shadow-xl relative">
                         {isMyItem(item) && (
                             <div className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                                Your Item
+                                Added By You
                             </div>
                         )}
                         <img src={item.image} alt={item.name} className="w-full h-32 object-cover mb-2" />
