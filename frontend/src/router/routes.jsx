@@ -8,6 +8,8 @@ import ItemForm from '../pages/ItemForm';
 import ProtectedRoute from './ProtectedRoute';
 import UserManagement from '../pages/UserManagement';
 import ArchiveManagement from '../pages/ArchiveManagement';
+import Profile from '../pages/Profile';
+
 export const router = createBrowserRouter([
     {
         path: '/',
@@ -53,6 +55,14 @@ export const router = createBrowserRouter([
                     </ProtectedRoute>
                 )
             },
+            {
+                path: 'profile',
+                element: (
+                    <ProtectedRoute allowedRoles={['admin', 'archiver', 'user']}>
+                        <Profile />
+                    </ProtectedRoute>
+                )
+            }
 
         ]
     },
