@@ -51,7 +51,6 @@ const ItemsList = () => {
         return user && item.createdBy && item.createdBy._id === user.id;
     };
 
-    // Filter and sort items
 const filteredAndSortedItems = items
     .filter(item => {
         const title = item.title || '';
@@ -91,7 +90,6 @@ const filteredAndSortedItems = items
 
     return (
         <div className="min-h-screen bg-gray-50">
-            {/* Header Section */}
             <div className="bg-white shadow-sm border-b">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between">
@@ -118,11 +116,9 @@ const filteredAndSortedItems = items
                 </div>
             </div>
 
-            {/* Controls Section */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-                        {/* Search Bar */}
                         <div className="flex-1 max-w-lg">
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -140,9 +136,7 @@ const filteredAndSortedItems = items
                             </div>
                         </div>
 
-                        {/* Controls */}
                         <div className="flex items-center space-x-4">
-                            {/* Sort Dropdown */}
                             <select
                                 value={sortBy}
                                 onChange={(e) => setSortBy(e.target.value)}
@@ -153,7 +147,6 @@ const filteredAndSortedItems = items
                                 <option value="title">By Title</option>
                             </select>
 
-                            {/* View Mode Toggle */}
                             <div className="flex bg-gray-100 rounded-lg p-1">
                                 <button
                                     onClick={() => setViewMode('grid')}
@@ -184,7 +177,6 @@ const filteredAndSortedItems = items
                     </div>
                 </div>
 
-                {/* Results Count */}
                 <div className="mb-6">
                     <p className="text-gray-600">
                         {searchTerm ? (
@@ -195,7 +187,6 @@ const filteredAndSortedItems = items
                     </p>
                 </div>
 
-                {/* Items Display */}
                 {filteredAndSortedItems.length === 0 ? (
                     <div className="text-center py-16">
                         <svg className="w-24 h-24 text-gray-300 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -230,7 +221,6 @@ const filteredAndSortedItems = items
                     }>
                         {filteredAndSortedItems.map(item => (
                             viewMode === 'grid' ? (
-                                // Grid View Card
                                 <div key={item._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
                                     <div className="relative">
                                         <img 
@@ -288,7 +278,6 @@ const filteredAndSortedItems = items
                                     </div>
                                 </div>
                             ) : (
-                                // List View Item
                                 <div key={item._id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
                                     <div className="flex items-center space-x-4">
                                         <div className="relative">
