@@ -10,62 +10,237 @@ const Navbar = () => {
   const handleLogout = () => {
     logout();
     setDropdownOpen(false);
-  }
+  };
 
   const canAddItems = user && (user.role === 'archiver' || user.role === 'admin');
 
   return (
-    <nav className="bg-gray-800 text-white p-4 flex items-center justify-between">
-      <Link to="/" className="text-lg font-bold">KamSoft</Link>
-      
-      <button
-        className="md:hidden block"
-        onClick={() => setMenuOpen(!menuOpen)}
-        aria-label="Toggle menu"
-      >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-            d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
+    <nav className="bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <Link to="/" className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">K</span>
+            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              KamSoft
+            </span>
+          </Link>
 
-      <div className="hidden md:flex items-center space-x-4">
-        <Link to="/" className="hover:text-gray-300">Home</Link>
-        <Link to="/archives" className="hover:text-gray-300">Archives</Link>
-        {canAddItems && <Link to="/archives/new" className="hover:text-gray-300">Add Archive</Link>}
+          <div className="hidden md:flex items-center space-x-8">
+            <Link to="/" className="text-gray-700 hover:text-blue-600 transition-colors duration-200">
+              Home
+            </Link>
+            <Link to="/archives" className="text-gray-700 hover:text-blue-600 transition-colors duration-200">
+              Archives
+            </Link>
+            {canAddItems && (
+              <Link 
+                to="/archives/new" 
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200 font-medium"
+              >
+                + Add Archive
+              </Link>
+            )}
+          </div>
 
-        {!user ? (
-          <Link to="/login" className=" hover:bg-blue-700 bg-blue-600 rounded-xl px-2 py-1 font-bold">Login</Link>
-        ) : (
-          <div className="relative">
-            <button
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-gray-700 px-3 py-2 text-sm font-semibold text-white shadow-xs ring-1 ring-gray-600 ring-inset hover:bg-gray-600"
-            >
-              {user.name || user.username || 'User'}
-              <svg viewBox="0 0 20 20" fill="currentColor" className="-mr-1 size-5 text-gray-300">
-                <path d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" fillRule="evenodd" />
-              </svg>
-            </button>
-
-            {dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 z-50">
-                <div className="py-1">
-                  <div className="block px-4 py-2 text-sm text-gray-500 border-b">
-                    Role: {user.role}
+          <div className="hidden md:flex items-center space-x-4">
+            {!user ? (
+              <div className="flex items-center space-x-3">
+                <Link 
+                  to="/signup" 
+                  className="text-gray-700 hover:text-blue-600 transition-colors duration-200"
+                >
+                  Sign Up
+                </Link>
+                <Link 
+                  to="/login" 
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200 font-medium"
+                >
+                  Login
+                </Link>
+              </div>
+            ) : (
+              <div className="relative">
+                <button
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                >
+                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <span className="text-white font-medium text-sm">
+                      {(user.name || user.username)?.charAt(0).toUpperCase()}
+                    </span>
                   </div>
+                  <div className="text-left">
+                    <div className="text-sm font-medium text-gray-900">
+                      {user.name || user.username}
+                    </div>
+                    <div className="text-xs text-gray-500 capitalize">{user.role}</div>
+                  </div>
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {dropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <div className="text-sm font-medium text-gray-900">{user.name || user.username}</div>
+                      <div className="text-sm text-gray-500">{user.email}</div>
+                      <div className="text-xs text-blue-600 capitalize font-medium mt-1">{user.role}</div>
+                    </div>
+                    
+                    <div className="py-2">
+                      <Link 
+                        to="/profile" 
+                        onClick={() => setDropdownOpen(false)}
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                      >
+                        <svg className="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        Profile Settings
+                      </Link>
+                      
+                      {canAddItems && (
+                        <Link 
+                          to="/dashboard" 
+                          onClick={() => setDropdownOpen(false)}
+                          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                        >
+                          <svg className="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                          </svg>
+                          Dashboard
+                        </Link>
+                      )}
+                      
+                      {user.role === 'admin' && (
+                        <>
+                          <Link
+                            to="/user-management"
+                            onClick={() => setDropdownOpen(false)}
+                            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                          >
+                            <svg className="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                            </svg>
+                            User Management
+                          </Link>
+                          <Link
+                            to="/archive-management"
+                            onClick={() => setDropdownOpen(false)}
+                            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                          >
+                            <svg className="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                            Archive Management
+                          </Link>
+                        </>
+                      )}
+                    </div>
+                    
+                    <div className="border-t border-gray-100 pt-2">
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                      >
+                        <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          <button
+            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d={menuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+            </svg>
+          </button>
+        </div>
+
+        {menuOpen && (
+          <div className="md:hidden border-t border-gray-200 py-4">
+            <div className="flex flex-col space-y-3">
+              <Link 
+                to="/" 
+                onClick={() => setMenuOpen(false)} 
+                className="text-gray-700 hover:text-blue-600 transition-colors duration-200 py-2"
+              >
+                Home
+              </Link>
+              <Link 
+                to="/archives" 
+                onClick={() => setMenuOpen(false)} 
+                className="text-gray-700 hover:text-blue-600 transition-colors duration-200 py-2"
+              >
+                Archives
+              </Link>
+              {canAddItems && (
+                <Link 
+                  to="/archives/new" 
+                  onClick={() => setMenuOpen(false)} 
+                  className="text-blue-600 font-medium py-2"
+                >
+                  + Add Archive
+                </Link>
+              )}
+              
+              {!user ? (
+                <>
+                  <Link 
+                    to="/signup" 
+                    onClick={() => setMenuOpen(false)} 
+                    className="text-gray-700 hover:text-blue-600 transition-colors duration-200 py-2"
+                  >
+                    Sign Up
+                  </Link>
+                  <Link 
+                    to="/login" 
+                    onClick={() => setMenuOpen(false)} 
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg text-center font-medium"
+                  >
+                    Login
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <div className="border-t border-gray-200 pt-3">
+                    <div className="flex items-center space-x-3 py-2">
+                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <span className="text-white font-medium text-sm">
+                          {(user.name || user.username)?.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">{user.name || user.username}</div>
+                        <div className="text-xs text-gray-500 capitalize">{user.role}</div>
+                      </div>
+                    </div>
+                  </div>
+                  
                   <Link 
                     to="/profile" 
-                    onClick={() => setDropdownOpen(false)}
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                    onClick={() => setMenuOpen(false)} 
+                    className="text-gray-700 hover:text-blue-600 transition-colors duration-200 py-2"
                   >
-                    Profile Settings
+                    Profile
                   </Link>
                   {canAddItems && (
                     <Link 
                       to="/dashboard" 
-                      onClick={() => setDropdownOpen(false)}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                      onClick={() => setMenuOpen(false)} 
+                      className="text-gray-700 hover:text-blue-600 transition-colors duration-200 py-2"
                     >
                       Dashboard
                     </Link>
@@ -73,54 +248,32 @@ const Navbar = () => {
                   {user.role === 'admin' && (
                     <>
                       <Link
-                          to="/user-management"
-                          onClick={() => setDropdownOpen(false)}
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                        >
-                          User Management
+                        to="/user-management"
+                        onClick={() => setMenuOpen(false)}
+                        className="text-gray-700 hover:text-blue-600 transition-colors duration-200 py-2"
+                      >
+                        User Management
                       </Link>
                       <Link
                         to="/archive-management"
-                        onClick={() => setDropdownOpen(false)}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                        onClick={() => setMenuOpen(false)}
+                        className="text-gray-700 hover:text-blue-600 transition-colors duration-200 py-2"
                       >
-                          Archive Management
+                        Archive Management
                       </Link>
                     </>
                   )}
-                  <button
-                    onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100 hover:text-red-500 font-medium"
+                  <button 
+                    onClick={() => { handleLogout(); setMenuOpen(false); }} 
+                    className="text-left text-red-600 hover:text-red-700 transition-colors duration-200 py-2"
                   >
-                    Sign out
+                    Sign Out
                   </button>
-                </div>
-              </div>
-            )}
+                </>
+              )}
+            </div>
           </div>
         )}
-      </div>
-
-      <div className={`md:hidden ${menuOpen ? 'block' : 'hidden'} absolute top-16 left-0 w-full bg-gray-800 p-4 z-10`}>
-        <div className="flex flex-col space-y-2">
-          <Link to="/" onClick={() => setMenuOpen(false)} className="hover:text-gray-300">Home</Link>
-          <Link to="/archives" onClick={() => setMenuOpen(false)} className="hover:text-gray-300">Archives</Link>
-          {canAddItems && <Link to="/archives/new" onClick={() => setMenuOpen(false)} className="hover:text-gray-300">Add Archive</Link>}
-          {!user ? (
-            <Link to="/login" onClick={() => setMenuOpen(false)} className="hover:text-gray-300 bg-blue-400">Login</Link>
-          ) : (
-            <>
-              <div className="text-sm text-gray-300 border-b border-gray-600 pb-2">
-                {user.name || user.username} ({user.role})
-              </div>
-              <Link to="/profile" onClick={() => setMenuOpen(false)} className="hover:text-gray-300">Profile</Link>
-              {canAddItems && <Link to="/dashboard" onClick={() => setMenuOpen(false)} className="hover:text-gray-300">Dashboard</Link>}
-              <button onClick={() => { handleLogout(); setMenuOpen(false); }} className="text-left hover:text-gray-300">
-                Sign out
-              </button>
-            </>
-          )}
-        </div>
       </div>
     </nav>
   );
