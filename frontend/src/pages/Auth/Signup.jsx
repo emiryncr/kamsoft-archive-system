@@ -18,13 +18,18 @@ const Signup = () => {
 
     return (
         <div className="min-h-screen">
+            <div className="absolute top-20 left-10 w-20 h-20 bg-blue-200 rounded-full opacity-60 animate-pulse"></div>
+            <div className="absolute top-40 right-20 w-16 h-16 bg-purple-200 rounded-full opacity-60 animate-bounce"></div>
+            <div className="absolute bottom-20 left-20 w-12 h-12 bg-pink-200 rounded-full opacity-60 animate-pulse"></div>
+            <div className="absolute bottom-40 right-10 w-14 h-14 bg-indigo-200 rounded-full opacity-60 animate-pulse" style={{ animationDelay: '1s' }}></div>
+
             <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
                 <div className="text-center mb-12">
                     <h1 className="text-4xl font-bold text-gray-800 mb-4">Start your journey!</h1>
                     <p className="text-lg text-gray-600">Choose your role to get started</p>
                 </div>
                 
-                <div className="grid md:grid-cols-2 gap-8 max-w-4xl w-full px-4">
+                <div className="grid md:grid-cols-3 gap-8 max-w-4xl w-full px-4">
                     <div 
                         onClick={() => handleRoleSelection('reader')}
                         className="bg-white p-8 rounded-lg shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl border-2 hover:border-blue-500"
@@ -54,6 +59,23 @@ const Signup = () => {
                             <p className="text-gray-300">Create and manage archived content</p>
                         </div>
                     </div>
+
+                     <div
+                         onClick={() => window.location.href = '/'}
+                         className="bg-gray-100 p-8 rounded-lg shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl border-2 hover:border-gray-400"
+                     >
+                         <div className="text-center">
+                             <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg className="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                             </div>
+                             <h3 className="text-2xl font-semibold mb-2">Guest</h3>
+                             <p className="text-gray-600">Limited access to features</p>
+                         </div>
+                     </div>
+
                 </div>
 
                 {selectedRole && (

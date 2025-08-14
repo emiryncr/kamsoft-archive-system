@@ -7,11 +7,32 @@ const ArchivistSignupForm = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    
     const navigate = useNavigate();
 
     const handleUserSignup = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        setError('');
+        setSuccess('');
+
+        if (password !== confirmPassword) {
+            setError("Passwords do not match");
+            setLoading(false);
+            return;
+        }
+
+        if (password.length < 6) {
+            setError("Password must be at least 6 characters long");
+            setLoading(false);
+            return;
+        }
 
         try {
             await api.post('/auth/signup', {
@@ -20,82 +41,234 @@ const ArchivistSignupForm = () => {
                 email,
                 password,
                 role: 'archiver'
-            })
-            alert('Archivist registered successfully!');
-            navigate('/login');
+            });
+            
+            setSuccess('Archivist account created successfully! Redirecting to login...');
+            setTimeout(() => {
+                navigate('/login');
+            }, 2000);
         } catch (err) {
             console.error("Signup failed:", err.response?.data || err.message);
+            setError(err.response?.data?.message || "Registration failed. Please try again.");
+        } finally {
+            setLoading(false);
         }
-
     }
 
     return (
-        <div className="flex items-center justify-center min-h-screen">
-            <div className="bg-white border-2 border-gray-200 p-8 rounded-xl shadow-xl w-full max-w-sm">
-                <h1 className="text-2xl font-bold mb-6 text-center">Sign up as an archivist</h1>
-                <form onSubmit={handleUserSignup}>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 mb-2" htmlFor="name">
-                            Name
-                        </label>
-                        <input
-                            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            type="text"
-                            id="archivist-name"
-                            placeholder="Enter your name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        />
+        <div className="w-full max-w-md mx-auto">
+            <div className="bg-gradient-to-r from-gray-900 to-black text-white p-8 rounded-2xl shadow-2xl border border-gray-700">
+                <div className="text-center mb-8">
+                    <div className="w-16 h-16 bg-gradient-to-r from-gray-600 to-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg border border-gray-600">
+                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
+                        </svg>
                     </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 mb-2" htmlFor="username">
+                    <h1 className="text-2xl font-bold mb-2">Join as Archiver</h1>
+                    <p className="text-gray-300">Create and manage archive collections</p>
+                </div>
+
+                {error && (
+                    <div className="mb-6 p-4 bg-red-900/50 border border-red-700 rounded-lg backdrop-blur-sm">
+                        <div className="flex items-center">
+                            <svg className="w-5 h-5 text-red-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span className="text-red-200 text-sm">{error}</span>
+                        </div>
+                    </div>
+                )}
+
+                {success && (
+                    <div className="mb-6 p-4 bg-green-900/50 border border-green-700 rounded-lg backdrop-blur-sm">
+                        <div className="flex items-center">
+                            <svg className="w-5 h-5 text-green-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span className="text-green-200 text-sm">{success}</span>
+                        </div>
+                    </div>
+                )}
+
+                <form onSubmit={handleUserSignup} className="space-y-6">
+                    <div>
+                        <label htmlFor="archivist-name" className="block text-sm font-medium text-gray-300 mb-2">
+                            Full Name
+                        </label>
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg className="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                            </div>
+                            <input
+                                type="text"
+                                id="archivist-name"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className="block w-full pl-10 pr-3 py-3 bg-gray-800/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200 text-white placeholder-gray-400"
+                                placeholder="Enter your full name"
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label htmlFor="archivist-username" className="block text-sm font-medium text-gray-300 mb-2">
                             Username
                         </label>
-                        <input
-                            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            type="text"
-                            id="archivist-username"
-                            placeholder="Enter your username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                        />
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg className="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2v0z" />
+                                </svg>
+                            </div>
+                            <input
+                                type="text"
+                                id="archivist-username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                className="block w-full pl-10 pr-3 py-3 bg-gray-800/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200 text-white placeholder-gray-400"
+                                placeholder="Choose a username"
+                                required
+                            />
+                        </div>
                     </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 mb-2" htmlFor="email">
-                            Email
+
+                    <div>
+                        <label htmlFor="archivist-email" className="block text-sm font-medium text-gray-300 mb-2">
+                            Email Address
                         </label>
-                        <input
-                            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            type="email"
-                            id="archivist-email"
-                            placeholder="Enter your email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg className="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                                </svg>
+                            </div>
+                            <input
+                                type="email"
+                                id="archivist-email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="block w-full pl-10 pr-3 py-3 bg-gray-800/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200 text-white placeholder-gray-400"
+                                placeholder="Enter your email"
+                                required
+                            />
+                        </div>
                     </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 mb-2" htmlFor="password">
+
+                    <div>
+                        <label htmlFor="archivist-password" className="block text-sm font-medium text-gray-300 mb-2">
                             Password
                         </label>
-                        <input
-                            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            type="password"
-                            id="archivist-password"
-                            placeholder="Enter your password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg className="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </div>
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                id="archivist-password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="block w-full pl-10 pr-10 py-3 bg-gray-800/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200 text-white placeholder-gray-400"
+                                placeholder="Create a password"
+                                required
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                            >
+                                {showPassword ? (
+                                    <svg className="h-5 w-5 text-gray-400 hover:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                                    </svg>
+                                ) : (
+                                    <svg className="h-5 w-5 text-gray-400 hover:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                )}
+                            </button>
+                        </div>
+                        <p className="mt-1 text-xs text-gray-400">Password must be at least 6 characters long</p>
                     </div>
+
+                    <div>
+                        <label htmlFor="archivist-confirm-password" className="block text-sm font-medium text-gray-300 mb-2">
+                            Confirm Password
+                        </label>
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg className="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <input
+                                type={showConfirmPassword ? "text" : "password"}
+                                id="archivist-confirm-password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                className="block w-full pl-10 pr-10 py-3 bg-gray-800/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200 text-white placeholder-gray-400"
+                                placeholder="Confirm your password"
+                                required
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                            >
+                                {showConfirmPassword ? (
+                                    <svg className="h-5 w-5 text-gray-400 hover:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                                    </svg>
+                                ) : (
+                                    <svg className="h-5 w-5 text-gray-400 hover:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-800 transition"
+                        disabled={loading}
+                        className="w-full bg-gradient-to-r from-gray-600 to-gray-800 text-white py-3 px-4 rounded-lg font-medium hover:from-gray-700 hover:to-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                     >
-                        Sign up
+                        {loading ? (
+                            <div className="flex items-center justify-center">
+                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Creating Account...
+                            </div>
+                        ) : (
+                            <div className="flex items-center justify-center space-x-2">
+                                <span>Create Archiver Account</span>
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                </svg>
+                            </div>
+                        )}
                     </button>
-                    <p className="mt-4 text-center text-gray-600">
-                        Do you have an account? <Link to="/login" className="text-blue-600 hover:underline">Login</Link>
-                    </p>
                 </form>
+
+                <div className="mt-6 text-center">
+                    <p className="text-gray-300">
+                        Already have an account?{' '}
+                        <Link 
+                            to="/login" 
+                            className="font-medium text-gray-400 hover:text-white transition-colors duration-200"
+                        >
+                            Sign in
+                        </Link>
+                    </p>
+                </div>
             </div>
         </div>
     );

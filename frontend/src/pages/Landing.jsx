@@ -95,12 +95,21 @@ const Landing = () => {
                 </>
               ) : (
                 <>
-                  <Link
-                    to="/archives/new"
-                    className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
-                  >
-                    Create New Archive
-                  </Link>
+                  {user.role === 'user' ? (
+                    <Link
+                        to="/archives"
+                        className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                      >
+                      Browse Archives
+                    </Link>
+                  ) : (
+                    <Link
+                      to="/archives/new"
+                      className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                    >
+                      Create New Archive
+                    </Link>
+                  )}
                   <Link
                     to="/profile"
                     className="border-2 border-blue-500 text-blue-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-500 hover:text-white transform hover:scale-105 transition-all duration-300"
@@ -127,10 +136,12 @@ const Landing = () => {
                     alt={image.title}
                     className="w-full h-full object-cover"
                   />
+                  <div className="absolute inset-0 bg-black opacity-40"></div>
+
                   <div className="absolute inset-0 flex items-end">
                     <div className="text-white p-8">
                       <h3 className="text-2xl font-bold mb-2">{image.title}</h3>
-                      <p className="text-lg opacity-90">{image.description}</p>
+                      <p className="text-lg">{image.description}</p>
                     </div>
                   </div>
                 </div>

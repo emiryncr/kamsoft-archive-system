@@ -7,7 +7,7 @@ const ItemsList = () => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
-    const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+    const [viewMode, setViewMode] = useState('grid');
     const [sortBy, setSortBy] = useState('newest');
     const { user } = useAuth();
     
@@ -221,7 +221,7 @@ const filteredAndSortedItems = items
                     }>
                         {filteredAndSortedItems.map(item => (
                             viewMode === 'grid' ? (
-                                <div key={item._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
+                                <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
                                     <div className="relative">
                                         <img 
                                             src={item.image} 
@@ -260,18 +260,24 @@ const filteredAndSortedItems = items
                                         </div>
 
                                         {canEditDelete(item) && (
-                                            <div className="flex space-x-2 pt-3 border-t border-gray-100">
+                                            <div className="flex justify-end space-x-2 pt-3 border-t border-gray-100">
                                                 <Link 
-                                                    to={`/archives/edit/${item._id}`}
-                                                    className="flex-1 bg-blue-500 text-white px-3 py-2 rounded-md text-sm text-center hover:bg-blue-600 transition-colors font-medium"
+                                                    to={`/archives/edit/${item.id}`}
+                                                    className="w-9 h-9 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300 flex items-center justify-center shadow-md hover:shadow-lg"
+                                                    title="Edit Archive"
                                                 >
-                                                    Edit
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                    </svg>
                                                 </Link>
                                                 <button 
-                                                    onClick={() => handleDelete(item._id)}
-                                                    className="flex-1 bg-red-500 text-white px-3 py-2 rounded-md text-sm hover:bg-red-600 transition-colors font-medium"
+                                                    onClick={() => handleDelete(item.id)}
+                                                    className="w-9 h-9 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors duration-300 flex items-center justify-center shadow-md hover:shadow-lg"
+                                                    title="Delete Archive"
                                                 >
-                                                    Delete
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
                                                 </button>
                                             </div>
                                         )}

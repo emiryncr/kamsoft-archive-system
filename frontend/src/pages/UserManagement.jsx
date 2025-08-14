@@ -35,17 +35,6 @@ const UserManagement = () => {
     }
   };
 
-  if (user?.role !== 'admin') {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">Access Denied</h2>
-          <p className="text-gray-600">This area is restricted to administrators only.</p>
-        </div>
-      </div>
-    );
-  }
-
   if (loading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
