@@ -55,6 +55,43 @@ const Profile = () => {
     }
   };
 
+  const getFormatIcon = (format) => {
+    switch (format) {
+      case 'Text':
+        return <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>;
+      case 'Image':
+        return <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>;
+      case 'Audio':
+        return <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" /></svg>;
+      case 'Video':
+        return <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>;
+      default:
+        return <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>;
+    }
+  };
+
+  const getConditionColor = (condition) => {
+    switch (condition) {
+      case 'Excellent': return 'bg-green-100 text-green-800';
+      case 'Good': return 'bg-blue-100 text-blue-800';
+      case 'Fair': return 'bg-yellow-100 text-yellow-800';
+      case 'Poor': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getAccessLevelIcon = (accessLevel) => {
+    switch (accessLevel) {
+      case 'Public':
+        return <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>;
+      case 'Restricted':
+        return <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>;
+      case 'Private':
+        return <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" /></svg>;
+      default: return null;
+    }
+  };
+
   const handleDeleteArchive = async (id) => {
     if (window.confirm('Are you sure you want to delete this archive?')) {
       try {
@@ -375,23 +412,108 @@ const Profile = () => {
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {userItems.map(item => (
-                      <div key={item.id} className="bg-white border-2 border-gray-200 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-                        <img
-                          src={item.image}
-                          alt={item.title}
-                          className="w-full h-32 object-cover"
-                        />
-                        <div className="p-4">
-                          <h4 className="font-semibold text-gray-900 mb-2">{item.title}</h4>
-                          <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                            {item.description?.substring(0, 80)}...
-                          </p>
-                          <div className="text-xs text-gray-500 mb-3">
-                            Created: {new Date(item.createdAt).toLocaleDateString()}
+                      <div key={item.id || item._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
+                        <div className="relative">
+                          <img
+                            src={item.image || 'https://via.placeholder.com/400x200?text=No+Image'}
+                            alt={item.title}
+                            className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                          
+                          <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                            Your Archive
                           </div>
+                          
+                          <div className="absolute top-3 left-3 flex items-center space-x-1 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded-full">
+                            {getAccessLevelIcon(item.accessLevel)}
+                            <span>{item.accessLevel || 'Public'}</span>
+                          </div>
+                        </div>
+                        
+                        <div className="p-4">
+                          <h4 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">
+                            {item.title || 'Untitled Archive'}
+                          </h4>
+                          
+                          {/* Metadata Chips */}
+                          <div className="flex flex-wrap gap-2 mb-3">
+                            {item.category && (
+                              <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                                {item.category}
+                              </span>
+                            )}
+                            {item.format && (
+                              <span className="inline-flex items-center space-x-1 px-2 py-1 text-xs font-medium bg-purple-100 text-purple-800 rounded-full">
+                                {getFormatIcon(item.format)}
+                                <span>{item.format}</span>
+                              </span>
+                            )}
+                            {item.condition && (
+                              <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${getConditionColor(item.condition)}`}>
+                                {item.condition}
+                              </span>
+                            )}
+                          </div>
+
+                          <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                            {item.description || 'No description available.'}
+                          </p>
+
+                          {(item.period || item.language) && (
+                            <div className="text-xs text-gray-500 mb-3 space-y-1">
+                              {item.period && (
+                                <div className="flex items-center">
+                                  <span className="font-medium">Period:</span>
+                                  <span className="ml-1">{item.period}</span>
+                                </div>
+                              )}
+                              {item.language && (
+                                <div className="flex items-center">
+                                  <span className="font-medium">Language:</span>
+                                  <span className="ml-1">{item.language}</span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {(item.keywords?.length > 0 || item.tags?.length > 0) && (
+                            <div className="mb-3">
+                              <div className="flex flex-wrap gap-1">
+                                {item.keywords?.slice(0, 2).map((keyword, index) => (
+                                  <span key={index} className="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded">
+                                    {keyword}
+                                  </span>
+                                ))}
+                                {item.tags?.slice(0, 2).map((tag, index) => (
+                                  <span key={index} className="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded">
+                                    #{tag}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          
+                          <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+                            <span className="flex items-center">
+                              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              {new Date(item.createdAt).toLocaleDateString()}
+                            </span>
+                            {item.viewCount > 0 && (
+                              <span className="flex items-center">
+                                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                {item.viewCount} views
+                              </span>
+                            )}
+                          </div>
+
                           <div className="flex justify-end space-x-2 pt-3 border-t border-gray-100">
                             <Link 
-                              to={`/archives/edit/${item.id}`}
+                              to={`/archives/edit/${item.id || item._id}`}
                               className="w-9 h-9 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300 flex items-center justify-center shadow-md hover:shadow-lg"
                               title="Edit Archive"
                             >
@@ -400,7 +522,7 @@ const Profile = () => {
                               </svg>
                             </Link>
                             <button
-                              onClick={() => handleDeleteArchive(item.id)}
+                              onClick={() => handleDeleteArchive(item.id || item._id)}
                               className="w-9 h-9 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors duration-300 flex items-center justify-center shadow-md hover:shadow-lg"
                               title="Delete Archive"
                             >

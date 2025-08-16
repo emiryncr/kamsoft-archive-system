@@ -35,6 +35,17 @@ const UserManagement = () => {
     }
   };
 
+  const deleteUser = async (userId) => {
+    try {
+      await api.delete(`/admin/users/${userId}`);
+      fetchUsers();
+      alert('User deleted successfully');
+    } catch (err) {
+      alert('Failed to delete user');
+      console.error('Error deleting user:', err);
+    }
+  };
+
   if (loading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
@@ -96,6 +107,12 @@ const UserManagement = () => {
                       <option value="archiver">Archiver</option>
                       <option value="admin">Admin</option>
                     </select>
+                    <button
+                      onClick={() => deleteUser(userItem._id)}
+                      className="ml-2 text-red-600 hover:text-red-800"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}

@@ -272,7 +272,7 @@ const Landing = () => {
               </svg>
               Get Started Now
             </Link>
-          ) : (
+          ) : user.role === 'archiver' || user.role === 'admin' ? (
             <Link
               to="/archives/new"
               className="inline-flex items-center bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
@@ -281,6 +281,13 @@ const Landing = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
               Create Your First Archive
+            </Link>
+          ) : (
+            <Link
+              to="/archives"
+              className="inline-flex items-center bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+            >
+              Browse Archives
             </Link>
           )}
         </div>

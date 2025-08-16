@@ -2,7 +2,7 @@ import Item from '../models/Item.js';
 
 const getAllItems = async (req, res, next) => {
   try {
-    const items = await Item.find()
+    const items = await Item.find({ isPublic:true })
         .populate('createdBy', 'name username')
         .sort({ createdAt: -1 });
     res.json(items);
@@ -19,22 +19,22 @@ const getItem = async (req, res, next) => {
       return res.status(404).json({ message: 'Item not found' });
     }
     res.json(item);
-    } catch (err) {
-        next(err);
-    }
+  } catch (err) {
+    next(err);
+  }
 };
 
 const createItem = async (req, res, next) => {
-    try{
-        const { title, description, image } = req.body;
-
+    try {
         const newItem = new Item({
-            title,
-            description,
-            image,
-            createdBy: req.user.id
+            ...req.body,
+            createdBy: req.user.id,
+            lastModifiedBy: req.user.id
         });
+        
         const savedItem = await newItem.save();
+        await savedItem.populate('createdBy', 'name username');
+        
         res.status(201).json(savedItem);
     } catch (err) {
         next(err);
@@ -54,7 +54,7 @@ const updateItem = async (req, res, next) => {
 
         const updatedItem = await Item.findByIdAndUpdate(
             req.params.id,
-            req.body,
+            { ...req.body, lastModifiedBy: req.user.id },
             { new: true }
         ).populate('createdBy', 'name username');
 
@@ -69,11 +69,11 @@ const deleteItem = async (req, res, next) => {
         const item = await Item.findById(req.params.id);
         
         if (!item) {
-        return res.status(404).json({ message: 'Item not found' });
+            return res.status(404).json({ message: 'Item not found' });
         }
 
         if (item.createdBy.toString() !== req.user.id && req.user.role !== 'admin') {
-        return res.status(403).json({ message: 'You can only delete your own items' });
+            return res.status(403).json({ message: 'You can only delete your own items' });
         }
 
         await Item.findByIdAndDelete(req.params.id);
