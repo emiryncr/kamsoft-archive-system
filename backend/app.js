@@ -4,6 +4,7 @@ import itemRoutes from './routes/itemRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
 import errorHandler from './middleware/errorHandler.js';
 
 const app = express()
@@ -18,6 +19,7 @@ app.use('/api/items', itemRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/upload', uploadRoutes);
 app.use(errorHandler);
 
 export default app

@@ -43,6 +43,16 @@ const itemSchema = new mongoose.Schema({
   
   dimensions: String, 
   tags: [String],
+
+  uploadedFile: {
+    fileId: { type: mongoose.Schema.Types.ObjectId },
+    filename: String,
+    originalName: String,
+    size: Number,
+    mimeType: String,
+    uploadDate: { type: Date, default: Date.now },
+    isUploaded: { type: Boolean, default: false }
+  },
   
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },

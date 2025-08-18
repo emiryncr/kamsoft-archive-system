@@ -10,7 +10,23 @@ const ItemsList = () => {
     const [viewMode, setViewMode] = useState('grid');
     const [sortBy, setSortBy] = useState('newest');
     const { user } = useAuth();
-    
+    const [viewerOpen, setViewerOpen] = useState(false);
+    const [currentFile, setCurrentFile] = useState(null);
+
+    const handleViewFile = (fileId, mimeType) => {
+        setCurrentFile({
+            id: fileId,
+            type: mimeType,
+            url: `http://localhost:5000/api/upload/file/${fileId}`
+        });
+        setViewerOpen(true);
+    };
+
+    const closeViewer = () => {
+        setViewerOpen(false);
+        setCurrentFile(null);
+    };
+
     useEffect(() => {
         fetchItems();
     }, []);
@@ -130,6 +146,79 @@ const filteredAndSortedItems = items
             </div>
         );
     }
+
+    const FileViewer = ({ file, onClose }) => {
+    if (!file) return null;
+
+    const renderContent = () => {
+            if (file.type === 'application/pdf') {
+                return (
+                    <iframe
+                        src={file.url}
+                        width="100%"
+                        height="600px"
+                        title="PDF Viewer"
+                        className="border-none"
+                    />
+                );
+            } else if (file.type?.startsWith('image/')) {
+                return (
+                    <img
+                        src={file.url}
+                        alt="Archive Content"
+                        className="max-w-full max-h-[600px] object-contain mx-auto"
+                    />
+                );
+            } else if (file.type?.startsWith('video/')) {
+                return (
+                    <video
+                        controls
+                        width="100%"
+                        height="600px"
+                        className="max-h-[600px]"
+                    >
+                        <source src={file.url} type={file.type} />
+                        Your browser does not support the video tag.
+                    </video>
+                );
+            } else {
+                return (
+                    <div className="text-center py-16">
+                        <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <p className="text-gray-600 mb-4">Preview not available for this file type</p>
+                        <a
+                            href={file.url}
+                            download
+                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                        >
+                            Download File
+                        </a>
+                    </div>
+                );
+            }
+        };
+
+        return (
+            <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden">
+                    <div className="flex items-center justify-between p-4 border-b">
+                        <h3 className="text-lg font-semibold">Archive Content</h3>
+                        <button
+                            onClick={onClose}
+                            className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
+                        >
+                            ×
+                        </button>
+                    </div>
+                    <div className="overflow-auto max-h-[calc(90vh-80px)]">
+                        {renderContent()}
+                    </div>
+                </div>
+            </div>
+        );
+    };
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -259,7 +348,7 @@ const filteredAndSortedItems = items
                 ) : (
                     <div className={
                         viewMode === 'grid' 
-                            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
                             : "space-y-4"
                     }>
                         {filteredAndSortedItems.map(item => (
@@ -372,6 +461,39 @@ const filteredAndSortedItems = items
                                             </div>
                                         )}
 
+                                        {item.uploadedFile && item.uploadedFile.fileId && (
+                                            <div className="mb-3 pt-2 border-t border-gray-100">
+                                                    <div className="flex items-center justify-between">
+                                                        <div className="flex items-center text-xs text-gray-600">
+                                                            <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                            </svg>
+                                                            <span>{item.uploadedFile.originalName}</span>
+                                                            <span className="ml-2 text-gray-400">
+                                                            ({(item.uploadedFile.size / 1024 / 1024).toFixed(1)}MB)
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex space-x-1">
+                                                            <button
+                                                                onClick={() => handleViewFile(item.uploadedFile.fileId, item.uploadedFile.mimeType)}
+                                                                className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200 transition-colors"
+                                                                title="View Content"
+                                                            >
+                                                                View
+                                                            </button>
+                                                            <a
+                                                                href={`http://localhost:5000/api/upload/file/${item.uploadedFile.fileId}`}
+                                                                download={item.uploadedFile.originalName}
+                                                                className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs hover:bg-blue-200 transition-colors"
+                                                                title="Download"
+                                                            >
+                                                                Download
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                        )}
+
                                         {canEditDelete(item) && (
                                             <div className="flex justify-end space-x-2 pt-3 border-t border-gray-100">
                                                 <Link 
@@ -413,66 +535,116 @@ const filteredAndSortedItems = items
                                         </div>
                                         
                                         <div className="flex-1 min-w-0">
-                                            <div className="flex items-start justify-between">
-                                                <div className="flex-1">
-                                                    <h3 className="text-xl font-semibold text-gray-900 mb-1">
+                                            <div className="flex flex-col">
+                                                <div className="flex items-start justify-between mb-2">
+                                                    <h3 className="text-xl font-semibold text-gray-900">
                                                         {item.title}
                                                     </h3>
                                                     
-                                                    <div className="flex flex-wrap gap-2 mb-2">
-                                                        <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                                                            {item.category || 'Uncategorized'}
-                                                        </span>
-                                                        <span className="inline-flex items-center space-x-1 px-2 py-1 text-xs font-medium bg-purple-100 text-purple-800 rounded-full">
-                                                            {getFormatIcon(item.format)}
-                                                            <span>{item.format || 'Unknown'}</span>
-                                                        </span>
-                                                        <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${getConditionColor(item.condition)}`}>
-                                                            {item.condition || 'Unknown'}
-                                                        </span>
-                                                        <span className="inline-flex items-center space-x-1 px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">
-                                                            {getAccessLevelIcon(item.accessLevel)}
-                                                            <span>{item.accessLevel || 'Public'}</span>
-                                                        </span>
-                                                    </div>
+                                                    {canEditDelete(item) && (
+                                                        <div className="hidden sm:flex space-x-2 ml-4">
+                                                            <Link 
+                                                                to={`/archives/edit/${item.id || item._id}`}
+                                                                className="bg-blue-500 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-600 transition-colors font-medium"
+                                                            >
+                                                                Edit
+                                                            </Link>
+                                                            <button 
+                                                                onClick={() => handleDelete(item.id || item._id)}
+                                                                className="bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600 transition-colors font-medium"
+                                                            >
+                                                                Delete
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                
+                                                <div className="flex flex-wrap gap-2 mb-2">
+                                                    <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                                                        {item.category || 'Uncategorized'}
+                                                    </span>
+                                                    <span className="inline-flex items-center space-x-1 px-2 py-1 text-xs font-medium bg-purple-100 text-purple-800 rounded-full">
+                                                        {getFormatIcon(item.format)}
+                                                        <span>{item.format || 'Unknown'}</span>
+                                                    </span>
+                                                    <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${getConditionColor(item.condition)}`}>
+                                                        {item.condition || 'Unknown'}
+                                                    </span>
+                                                    <span className="inline-flex items-center space-x-1 px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">
+                                                        {getAccessLevelIcon(item.accessLevel)}
+                                                        <span>{item.accessLevel || 'Public'}</span>
+                                                    </span>
+                                                </div>
 
-                                                    <p className="text-gray-600 mb-2 line-clamp-2">
-                                                        {item.description}
-                                                    </p>
-                                                    
-                                                    <div className="flex items-center text-sm text-gray-500 space-x-4">
-                                                        <span className="flex items-center">
-                                                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                                            </svg>
-                                                            {item.createdBy?.name || item.createdBy?.username || 'Unknown'}
-                                                        </span>
-                                                        <span className="flex items-center">
-                                                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                            </svg>
-                                                            {new Date(item.createdAt).toLocaleDateString()}
-                                                        </span>
-                                                        {item.period && (
-                                                            <span>Period: {item.period}</span>
-                                                        )}
-                                                        {item.viewCount > 0 && (
-                                                            <span>{item.viewCount} views</span>
-                                                        )}
+                                                <p className="text-gray-600 mb-3 line-clamp-2">
+                                                    {item.description}
+                                                </p>
+                                                
+                                                {item.uploadedFile && item.uploadedFile.fileId && (
+                                                    <div className="mb-3 p-3 bg-gray-50 rounded-lg">
+                                                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                                                            <div className="flex items-center text-sm text-gray-700">
+                                                                <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                                </svg>
+                                                                <span className="truncate">{item.uploadedFile.originalName}</span>
+                                                                <span className="ml-2 text-gray-500 text-xs flex-shrink-0">
+                                                                    ({(item.uploadedFile.size / 1024 / 1024).toFixed(1)}MB)
+                                                                </span>
+                                                            </div>
+                                                            <div className="flex space-x-2">
+                                                                <button
+                                                                    onClick={() => handleViewFile(item.uploadedFile.fileId, item.uploadedFile.mimeType)}
+                                                                    className="px-3 py-1 bg-green-100 text-green-700 rounded text-sm hover:bg-green-200 transition-colors font-medium"
+                                                                    title="View Content"
+                                                                >
+                                                                    View
+                                                                </button>
+                                                                <a
+                                                                    href={`http://localhost:5000/api/upload/file/${item.uploadedFile.fileId}`}
+                                                                    download={item.uploadedFile.originalName}
+                                                                    className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm hover:bg-blue-200 transition-colors font-medium"
+                                                                    title="Download"
+                                                                >
+                                                                    Download
+                                                                </a>
+                                                            </div>
+                                                        </div>
                                                     </div>
+                                                )}
+                                                
+                                                <div className="flex flex-wrap items-center text-sm text-gray-500 space-x-4 mb-3">
+                                                    <span className="flex items-center">
+                                                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                        </svg>
+                                                        {item.createdBy?.name || item.createdBy?.username || 'Unknown'}
+                                                    </span>
+                                                    <span className="flex items-center">
+                                                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                        </svg>
+                                                        {new Date(item.createdAt).toLocaleDateString()}
+                                                    </span>
+                                                    {item.period && (
+                                                        <span className="hidden sm:inline">Period: {item.period}</span>
+                                                    )}
+                                                    {item.viewCount > 0 && (
+                                                        <span className="hidden sm:inline">{item.viewCount} views</span>
+                                                    )}
                                                 </div>
 
                                                 {canEditDelete(item) && (
-                                                    <div className="flex space-x-2 ml-4">
+                                                    <div className="flex sm:hidden space-x-2 pt-3 border-t border-gray-200">
                                                         <Link 
                                                             to={`/archives/edit/${item.id || item._id}`}
-                                                            className="bg-blue-500 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-600 transition-colors font-medium"
+                                                            className="flex-1 bg-blue-500 text-white px-3 py-2 rounded-md text-sm hover:bg-blue-600 transition-colors font-medium text-center"
                                                         >
                                                             Edit
                                                         </Link>
                                                         <button 
                                                             onClick={() => handleDelete(item.id || item._id)}
-                                                            className="bg-red-500 text-white px-4 py-2 rounded-md text-sm hover:bg-red-600 transition-colors font-medium"
+                                                            className="flex-1 bg-red-500 text-white px-3 py-2 rounded-md text-sm hover:bg-red-600 transition-colors font-medium"
                                                         >
                                                             Delete
                                                         </button>
@@ -487,6 +659,13 @@ const filteredAndSortedItems = items
                     </div>
                 )}
             </div>
+        
+            {viewerOpen && (
+                <FileViewer
+                    file={currentFile}
+                    onClose={closeViewer}
+                />
+            )}
         </div>
     );
 };

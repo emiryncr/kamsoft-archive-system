@@ -25,8 +25,41 @@ const ItemForm = ({ editMode = false }) => {
     accessLevel: 'Public',
     copyrightStatus: '',
     dimensions: '',
-    tags: ''
+    tags: '',
+    uploadedFile: null
   });
+
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file);
+  };
+
+  const uploadFile = async () => {
+    if (!selectedFile) return null;
+    
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      
+      const response = await api.post('/upload/file', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      setUploading(false);
+      return response.data.file;
+    } catch (error) {
+      console.error('File upload error:', error);
+      setUploading(false);
+      alert('File upload failed');
+      return null;
+    }
+  };
 
   useEffect(() => {
     if (editMode && id) {
@@ -61,12 +94,22 @@ const ItemForm = ({ editMode = false }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      let uploadedFileData = null;
+
+      if (selectedFile) {
+        uploadedFileData = await uploadFile();
+        if (!uploadedFileData) {
+          return;
+        }
+      }
+
       const processedData = {
         ...itemData,
         subject: itemData.subject ? itemData.subject.split(',').map(s => s.trim()).filter(Boolean) : [],
         keywords: itemData.keywords ? itemData.keywords.split(',').map(k => k.trim()).filter(Boolean) : [],
         tags: itemData.tags ? itemData.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
-        acquisitionDate: itemData.acquisitionDate || undefined
+        acquisitionDate: itemData.acquisitionDate || undefined,
+        uploadedFile: uploadedFileData
       };
 
       if (editMode && id) {
@@ -412,6 +455,69 @@ const ItemForm = ({ editMode = false }) => {
               </div>
             </div>
 
+            <div className="bg-yellow-50 p-6 rounded-lg">
+              <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.586-6.586a2 2 0 002.828-2.828l-1.414-1.414a2 2 0 00-2.828 0l-1.414 1.414a2 2 0 000 2.828z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4" />
+                </svg>
+                File Upload
+              </h2>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Upload Document/Media File
+                  </label>
+                  <input
+                    type="file"
+                    onChange={handleFileChange}
+                    accept=".pdf,.jpg,.jpeg,.png,.gif,.mp4,.avi"
+                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Supported formats: PDF, Images (JPG, PNG, GIF), Videos (MP4, AVI). Max size: 50MB
+                  </p>
+                </div>
+
+                {selectedFile && (
+                  <div className="bg-white p-4 rounded-lg border border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">{selectedFile.name}</p>
+                          <p className="text-xs text-gray-500">
+                            {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedFile(null)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {uploading && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-center">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-3"></div>
+                      <span className="text-sm text-blue-700">Uploading file...</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
             <div className="flex items-center justify-between pt-6 border-t border-gray-200">
               <button
                 type="button"
@@ -422,9 +528,12 @@ const ItemForm = ({ editMode = false }) => {
               </button>
               <button
                 type="submit"
-                className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 font-medium shadow-md hover:shadow-lg"
+                disabled={uploading}
+                  className={`px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 font-medium shadow-md hover:shadow-lg ${
+                  uploading ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
               >
-                {editMode ? 'Update Archive' : 'Create Archive'}
+                {uploading ? 'Uploading...' : editMode ? 'Update Archive' : 'Create Archive'}
               </button>
             </div>
           </form>
