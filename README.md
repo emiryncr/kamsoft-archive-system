@@ -12,6 +12,23 @@ KamSoft is a system for managing Library, Archive, and Museum (KAM) digital cont
 - **Axios**: HTTP client for API requests
 - **Context API**: State management for authentication
 
+## 📸 Gallery
+
+<video src="https://github.com/user-attachments/assets/1dd846cd-ae60-44b8-aec0-5804f2f14d00" width="50%" controls></video>
+<video src="https://github.com/user-attachments/assets/067d5a48-9d3f-49fb-bd9a-43e9fe285a87" width="50%" controls></video>
+
+
+
+<img width="30%" alt="Ekran görüntüsü 2025-08-18 124917" src="https://github.com/user-attachments/assets/85072cc8-1d6f-4a12-a088-f153fe771418" />
+<img width="30%" alt="Ekran görüntüsü 2025-08-18 124955" src="https://github.com/user-attachments/assets/e7d23256-a4af-47b5-ab27-574569461fc7" />
+<img width="30%" alt="Ekran görüntüsü 2025-08-18 125007" src="https://github.com/user-attachments/assets/e20b560b-a01b-47e7-bd3b-f772c892212e" />
+<img width="30%" alt="Ekran görüntüsü 2025-08-18 125147" src="https://github.com/user-attachments/assets/f9144dc3-4773-4810-b926-ebb28175816c" />
+<img width="30%" alt="Ekran görüntüsü 2025-08-18 125234" src="https://github.com/user-attachments/assets/850ba80f-0e55-40d7-a598-17f69b228e7d" />
+<img width="30%" alt="Ekran görüntüsü 2025-08-18 125321" src="https://github.com/user-attachments/assets/f15f40e0-3207-445c-a604-50270052c6cd" />
+<img width="30%" alt="Ekran görüntüsü 2025-08-18 125332" src="https://github.com/user-attachments/assets/1ed69bea-a5d7-4126-9b55-de244594214c" />
+<img width="30%" alt="Ekran görüntüsü 2025-08-18 125344" src="https://github.com/user-attachments/assets/d0d4d6d5-e3b3-4ba5-96d6-043c891b5e16" />
+<img width="30%" alt="Ekran görüntüsü 2025-08-18 125425" src="https://github.com/user-attachments/assets/a9681313-bb71-4e9d-ad76-bed83db663ff" />
+
 **Backend**
 - **Node.js**: Runtime environment
 - **Express.js**: Web application framework
